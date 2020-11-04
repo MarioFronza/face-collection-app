@@ -1,0 +1,11 @@
+<resources>
+    <string name="app_name">face-collection-app</string>
+    <string name="name_field">Name</string>
+    <string name="email_field">E-mail</string>
+    <string name="enrollment_field">Matrícula</string>
+    <string name="password_field">Senha</string>
+    <string name="sign_up">Criar Conta</string>
+    <string name="create_account">Criar conta grátis</string>
+    <string name="already_login">Já tenho login</string>
+    <string name="sign_in">Entrar</string>
+</resources>
