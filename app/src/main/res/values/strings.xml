@@ -8,4 +8,7 @@
     <string name="create_account">Criar conta grátis</string>
     <string name="already_login">Já tenho login</string>
     <string name="sign_in">Entrar</string>
+    <string name="student_photo">Student Photo</string>
+    <string name="logo">logo</string>
+    <string name="string_logo">logo</string>
 </resources>
