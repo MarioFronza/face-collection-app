@@ -13,7 +13,7 @@ interface ApiService {
     companion object {
         operator fun invoke(): ApiService {
             return Retrofit.Builder()
-                .baseUrl("http://10.0.2.2:3333/")
+                .baseUrl("http://192.168.1.4:3333/")
                 .addConverterFactory(GsonConverterFactory.create())
                 .build()
                 .create(ApiService::class.java)
