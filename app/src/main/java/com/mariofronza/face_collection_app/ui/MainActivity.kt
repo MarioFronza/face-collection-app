@@ -1,10 +1,10 @@
-package com.mariofronza.face_collection_app.activities
+package com.mariofronza.face_collection_app.ui
 
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.mariofronza.face_collection_app.R
-import com.mariofronza.face_collection_app.adapters.PhotosAdapter
+import com.mariofronza.face_collection_app.ui.photos.PhotosAdapter
 import com.mariofronza.face_collection_app.models.Photo
 import com.mariofronza.face_collection_app.models.PhotoType
 import kotlinx.android.synthetic.main.activity_main.*

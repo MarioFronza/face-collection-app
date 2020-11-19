@@ -14,8 +14,8 @@
         android:theme="@style/Theme.Facecollectionapp"
         android:usesCleartextTraffic="true"
         tools:targetApi="m">
-        <activity android:name=".activities.SignInActivity" />
-        <activity android:name=".activities.MainActivity">
+        <activity android:name=".ui.user.SignInActivity" />
+        <activity android:name=".ui.MainActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 

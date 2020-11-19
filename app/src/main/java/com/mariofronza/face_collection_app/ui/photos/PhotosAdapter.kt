@@ -1,4 +1,4 @@
-package com.mariofronza.face_collection_app.adapters
+package com.mariofronza.face_collection_app.ui.photos
 
 import android.view.LayoutInflater
 import android.view.View
@@ -8,6 +8,7 @@ import com.bumptech.glide.Glide
 import com.bumptech.glide.load.engine.DiskCacheStrategy
 import com.mariofronza.face_collection_app.R
 import com.mariofronza.face_collection_app.models.Photo
+import com.mariofronza.face_collection_app.models.PhotoType
 import kotlinx.android.synthetic.main.photo_item.view.*
 
 class PhotosAdapter(
@@ -24,7 +25,7 @@ class PhotosAdapter(
     override fun onBindViewHolder(holder: PhotoViewHolder, position: Int) {
         val photo = photos[position]
         holder.itemView.apply {
-            tvPhotoItemType.text = photo.photoType.name
+            tvPhotoItemType.text = getFormattedPhotoType(photo.photoType.name)
             tvPhotoItemDate.text = photo.updatedAt
             Glide.with(context)
                 .load(photo.url)
@@ -36,6 +37,17 @@ class PhotosAdapter(
 
     override fun getItemCount(): Int {
         return photos.size
+    }
+
+    private fun getFormattedPhotoType(photoTypeName: String): String {
+        return when (photoTypeName) {
+            PhotoType.NORMAL.name -> "Normal"
+            PhotoType.SMILING.name -> "Sorrindo"
+            PhotoType.CLOSED_EYES.name -> "Olhos fechados"
+            PhotoType.RIGHT_SIDE.name -> "Lado direito"
+            PhotoType.LEFT_SIDE.name -> "Lado esquerdo"
+            else -> "Desconhecido"
+        }
     }
 
 }
