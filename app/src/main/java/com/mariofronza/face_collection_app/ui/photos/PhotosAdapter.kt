@@ -1,5 +1,6 @@
 package com.mariofronza.face_collection_app.ui.photos
 
+import android.annotation.SuppressLint
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -8,11 +9,11 @@ import com.bumptech.glide.Glide
 import com.bumptech.glide.load.engine.DiskCacheStrategy
 import com.mariofronza.face_collection_app.R
 import com.mariofronza.face_collection_app.models.Photo
-import com.mariofronza.face_collection_app.models.PhotoType
 import kotlinx.android.synthetic.main.photo_item.view.*
+import java.text.SimpleDateFormat
 
 class PhotosAdapter(
-    private val photos: ArrayList<Photo>
+    private val photos: List<Photo>
 ) : RecyclerView.Adapter<PhotosAdapter.PhotoViewHolder>() {
 
     inner class PhotoViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView)
@@ -25,8 +26,8 @@ class PhotosAdapter(
     override fun onBindViewHolder(holder: PhotoViewHolder, position: Int) {
         val photo = photos[position]
         holder.itemView.apply {
-            tvPhotoItemType.text = getFormattedPhotoType(photo.photoType.name)
-            tvPhotoItemDate.text = photo.updatedAt
+            tvPhotoItemType.text = getFormattedPhotoType(photo.photoType)
+            tvPhotoItemDate.text = photo.updatedAt?.let { getFormattedDate(it) }
             Glide.with(context)
                 .load(photo.url)
                 .diskCacheStrategy(DiskCacheStrategy.ALL)
@@ -41,13 +42,20 @@ class PhotosAdapter(
 
     private fun getFormattedPhotoType(photoTypeName: String): String {
         return when (photoTypeName) {
-            PhotoType.NORMAL.name -> "Normal"
-            PhotoType.SMILING.name -> "Sorrindo"
-            PhotoType.CLOSED_EYES.name -> "Olhos fechados"
-            PhotoType.RIGHT_SIDE.name -> "Lado direito"
-            PhotoType.LEFT_SIDE.name -> "Lado esquerdo"
+            "normal" -> "Normal"
+            "smilling" -> "Sorrindo"
+            "closedEyes" -> "Olhos fechados"
+            "rightSide" -> "Lado direito"
+            "leftSide" -> "Lado esquerdo"
             else -> "Desconhecido"
         }
+    }
+
+    @SuppressLint("SimpleDateFormat")
+    private fun getFormattedDate(date: String): String {
+        val parser = SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss")
+        val formatter = SimpleDateFormat("dd/MM/yyyy")
+        return formatter.format(parser.parse(date))
     }
 
 }

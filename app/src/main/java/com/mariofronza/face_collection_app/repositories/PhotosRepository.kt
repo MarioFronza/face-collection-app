@@ -9,9 +9,9 @@ class PhotosRepository(
 
     suspend fun getPhotos(token: String) = api.getPhotos("Bearer $token")
 
-    suspend fun createFood(token: String, photo: Photo) = api.createPhoto("Bearer $token", photo)
+    suspend fun createPhoto(token: String, photo: Photo) = api.createPhoto("Bearer $token", photo)
 
-    suspend fun updateFood(token: String, id: Int, photo: Photo) =
+    suspend fun updatePhoto(token: String, id: Int, photo: Photo) =
         api.updatePhoto("Bearer $token", id, photo)
 
 }
