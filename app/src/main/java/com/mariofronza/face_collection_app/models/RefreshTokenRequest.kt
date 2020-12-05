@@ -1,7 +1,6 @@
 package com.mariofronza.face_collection_app.models
 
-class SessionResponse(
-    val user: User,
-    val token: String,
+data class RefreshTokenRequest(
     val refreshToken: String
 )
+

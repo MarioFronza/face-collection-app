@@ -12,6 +12,7 @@ class SessionManager(context: Context) {
 
     companion object {
         const val USER_TOKEN = "user_token"
+        const val REFRESH_TOKEN = "refresh_token"
     }
 
     fun saveAuthToken(token: String) {
@@ -20,13 +21,24 @@ class SessionManager(context: Context) {
         editor.apply()
     }
 
-    fun removeAuthToken() {
+    fun saveRefreshToken(token: String) {
+        val editor = prefs.edit()
+        editor.putString(REFRESH_TOKEN, token)
+        editor.apply()
+    }
+
+    fun removeTokens() {
         val editor = prefs.edit()
         editor.remove(USER_TOKEN)
+        editor.remove(REFRESH_TOKEN)
         editor.apply()
     }
 
     fun fetchAuthToken(): String? {
         return prefs.getString(USER_TOKEN, null)
+    }
+
+    fun fetchRefreshToken(): String? {
+        return prefs.getString(REFRESH_TOKEN, null)
     }
 }

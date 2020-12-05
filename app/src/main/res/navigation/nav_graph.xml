@@ -19,9 +19,9 @@
 
     <fragment
         android:id="@+id/handlePhotoFragment"
-        android:name="com.mariofronza.face_collection_app.ui.photos.HandlePhotoFragment"
+        android:name="com.mariofronza.face_collection_app.ui.photos.HandlePhotoActivity"
         android:label="fragment_handle_photo"
-        tools:layout="@layout/fragment_handle_photo" >
+        tools:layout="@layout/activity_handle_photo" >
         <action
             android:id="@+id/action_handlePhotoFragment_to_photosFragment"
             app:destination="@id/photosFragment" />

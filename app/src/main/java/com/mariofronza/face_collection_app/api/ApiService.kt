@@ -1,6 +1,7 @@
 package com.mariofronza.face_collection_app.api
 
 import com.mariofronza.face_collection_app.models.Photo
+import com.mariofronza.face_collection_app.models.RefreshTokenRequest
 import com.mariofronza.face_collection_app.models.SessionRequest
 import com.mariofronza.face_collection_app.models.SessionResponse
 import retrofit2.Response
@@ -13,7 +14,7 @@ interface ApiService {
     companion object {
         operator fun invoke(): ApiService {
             return Retrofit.Builder()
-                .baseUrl("http://10.0.0.2:3333/")
+                .baseUrl("http://192.168.1.110:3333/")
                 .addConverterFactory(GsonConverterFactory.create())
                 .build()
                 .create(ApiService::class.java)
@@ -39,5 +40,8 @@ interface ApiService {
 
     @POST("sessions")
     suspend fun createSession(@Body request: SessionRequest): Response<SessionResponse>
+
+    @POST("refresh-tokens")
+    suspend fun refreshToken(@Body request: RefreshTokenRequest): Response<SessionResponse>
 
 }

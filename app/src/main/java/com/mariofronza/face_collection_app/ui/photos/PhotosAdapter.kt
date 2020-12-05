@@ -8,12 +8,14 @@ import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import com.bumptech.glide.load.engine.DiskCacheStrategy
 import com.mariofronza.face_collection_app.R
+import com.mariofronza.face_collection_app.listeners.RecyclerViewClickListener
 import com.mariofronza.face_collection_app.models.Photo
 import kotlinx.android.synthetic.main.photo_item.view.*
 import java.text.SimpleDateFormat
 
 class PhotosAdapter(
-    private val photos: List<Photo>
+    private val photos: List<Photo>,
+    private val listener: RecyclerViewClickListener
 ) : RecyclerView.Adapter<PhotosAdapter.PhotoViewHolder>() {
 
     inner class PhotoViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView)
@@ -33,6 +35,10 @@ class PhotosAdapter(
                 .diskCacheStrategy(DiskCacheStrategy.ALL)
                 .error(R.drawable.no_profile)
                 .into(ivPhotoItem)
+
+            cvPhoto.setOnClickListener {
+                listener.onRecyclerViewItemClick(photo)
+            }
         }
     }
 

@@ -1,5 +1,6 @@
 package com.mariofronza.face_collection_app.ui.photos
 
+import android.content.Intent
 import android.os.Bundle
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
@@ -7,15 +8,18 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
+import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.mariofronza.face_collection_app.R
 import com.mariofronza.face_collection_app.api.ApiService
+import com.mariofronza.face_collection_app.listeners.RecyclerViewClickListener
 import com.mariofronza.face_collection_app.models.Photo
 import com.mariofronza.face_collection_app.repositories.PhotosRepository
+import com.mariofronza.face_collection_app.ui.user.SignInActivity
 import com.mariofronza.face_collection_app.utils.SessionManager
 
-class PhotosFragment : Fragment() {
+class PhotosFragment : Fragment(), RecyclerViewClickListener {
 
     private lateinit var sessionManager: SessionManager
     private lateinit var photosViewModel: PhotosViewModel
@@ -39,7 +43,7 @@ class PhotosFragment : Fragment() {
         photosViewModel =
             ViewModelProvider(this, photosViewModelFactory).get(PhotosViewModel::class.java)
 
-        val adapter = PhotosAdapter(photos)
+        val adapter = PhotosAdapter(photos, this)
         rvPhotos.adapter = adapter
         rvPhotos.layoutManager = LinearLayoutManager(requireActivity())
 
@@ -58,6 +62,12 @@ class PhotosFragment : Fragment() {
         val token = sessionManager.fetchAuthToken()
         if (token != null) {
             photosViewModel.getAllPhotos(token)
+        }
+    }
+
+    override fun onRecyclerViewItemClick(photo: Photo) {
+        Intent(activity, HandlePhotoActivity::class.java).also {
+            startActivity(it)
         }
     }
 

@@ -63,6 +63,7 @@ class SignInActivity : AppCompatActivity() {
 
     private fun signInSuccess(sessionResponse: SessionResponse) {
         sessionManager.saveAuthToken(sessionResponse.token)
+        sessionManager.saveRefreshToken(sessionResponse.refreshToken)
         Intent(this, MainActivity::class.java).also {
             startActivity(it)
             finish()
