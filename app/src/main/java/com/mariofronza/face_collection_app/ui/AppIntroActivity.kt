@@ -13,19 +13,19 @@ class AppIntroActivity : AppIntro() {
         addSlide(
             AppIntroFragment.newInstance(
                 title = "Olá",
-                description = "Bem-vindo ao coletor de faces do Open Face Recognition System"
+                description = "Bem-vindo ao coletor de faces do Open Face Recognition System."
             )
         )
         addSlide(
             AppIntroFragment.newInstance(
                 title = "O que é esse app? 🧐",
-                description = "Este app tem o objetivo de coletar fotos de rostos para o treinamento dos algoritmos de reconhecimento facial existentes."
+                description = "Este app tem o objetivo de coletar fotos de rostos para o treinamento dos algoritmos de reconhecimento existentes."
             )
         )
         addSlide(
             AppIntroFragment.newInstance(
                 title = "O que você precisa fazer?",
-                description = "Serão coletadas 30 fotos do seu rosto" +
+                description = "Serão coletadas através do app 30 fotos do seu rosto" +
                         "\n - 6 fotos de sua face normal 😐" +
                         "\n - 6 fotos de você sorrindo 😁" +
                         "\n - 6 fotos de olhos fechados 😑" +
@@ -36,13 +36,13 @@ class AppIntroActivity : AppIntro() {
         addSlide(
             AppIntroFragment.newInstance(
                 title = "Quase lá",
-                description = "Se vc chegou até aqui, provavelmente já tem um cadastro na aplicação, sendo seu e-mail e uma senha padrão. Você pode alterar ela quando entrar no app."
+                description = "Se você chegou até aqui, provavelmente já tem um cadastro na aplicação, sendo seu e-mail e uma senha padrão. Você pode alterar ela quando entrar no app."
             )
         )
         addSlide(
             AppIntroFragment.newInstance(
                 title = "Mais uma coisa",
-                description = "Ao utilizar este app, vc concorda em disponibilizar as fotos de seu rosto para o desenvolvimento deste trabalho." +
+                description = "Ao utilizar este app, você concorda em disponibilizar as fotos de seu rosto para o desenvolvimento deste trabalho." +
                         "\n Suas fotos não serão compartilhadas com ninguém."
             )
         )
