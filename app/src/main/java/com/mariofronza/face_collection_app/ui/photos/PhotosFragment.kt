@@ -8,7 +8,6 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
-import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.mariofronza.face_collection_app.R
@@ -22,8 +21,8 @@ import com.mariofronza.face_collection_app.utils.SessionManager
 class PhotosFragment : Fragment(), RecyclerViewClickListener {
 
     private lateinit var sessionManager: SessionManager
-    private lateinit var photosViewModel: PhotosViewModel
     private lateinit var rvPhotos: RecyclerView
+    private lateinit var photosViewModel: PhotosViewModel
     private lateinit var photosViewModelFactory: PhotosViewModelFactory
 
     private val photos = mutableListOf<Photo>()
@@ -66,7 +65,10 @@ class PhotosFragment : Fragment(), RecyclerViewClickListener {
     }
 
     override fun onRecyclerViewItemClick(photo: Photo) {
+
         Intent(activity, HandlePhotoActivity::class.java).also {
+            it.putExtra("photoId", photo.id)
+            it.putExtra("photoType", photo.photoType)
             startActivity(it)
         }
     }

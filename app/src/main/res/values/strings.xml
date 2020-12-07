@@ -13,4 +13,5 @@
     <string name="string_logo">logo</string>
     <string name="switch_camera">Trocar câmera</string>
     <string name="take_picture">Tirar foto</string>
+    <string name="normal_photo">take_normal_photo</string>
 </resources>

@@ -21,6 +21,7 @@ class SignInActivity : AppCompatActivity() {
     private lateinit var factory: UserViewModelFactory
     private lateinit var viewModel: UserViewModel
 
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_sign_in)
@@ -66,8 +67,8 @@ class SignInActivity : AppCompatActivity() {
         sessionManager.saveRefreshToken(sessionResponse.refreshToken)
         Intent(this, MainActivity::class.java).also {
             startActivity(it)
-            finish()
         }
+        finish()
     }
 
     private fun signInFail(message: String) {

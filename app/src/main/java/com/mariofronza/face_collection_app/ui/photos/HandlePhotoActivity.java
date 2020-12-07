@@ -1,11 +1,20 @@
 package com.mariofronza.face_collection_app.ui.photos;
 
 import android.content.Context;
+import android.content.Intent;
+import android.graphics.Bitmap;
 import android.os.Bundle;
+import android.util.Log;
+import android.view.View;
 import android.view.WindowManager;
 import android.widget.Button;
+import android.widget.TextView;
+
+import androidx.lifecycle.Observer;
 
 import com.mariofronza.face_collection_app.R;
+import com.mariofronza.face_collection_app.repositories.PhotosRepository;
+import com.mariofronza.face_collection_app.utils.SessionManager;
 
 import org.opencv.android.BaseLoaderCallback;
 import org.opencv.android.CameraActivity;
@@ -13,33 +22,46 @@ import org.opencv.android.CameraBridgeViewBase.CvCameraViewListener2;
 import org.opencv.android.CameraBridgeViewBase;
 import org.opencv.android.LoaderCallbackInterface;
 import org.opencv.android.OpenCVLoader;
-import org.opencv.core.Core;
+import org.opencv.android.Utils;
+import org.opencv.core.CvException;
 import org.opencv.core.Mat;
 import org.opencv.core.MatOfRect;
-import org.opencv.core.Point;
 import org.opencv.core.Rect;
 import org.opencv.core.Scalar;
 import org.opencv.core.Size;
 import org.opencv.imgproc.Imgproc;
 import org.opencv.objdetect.CascadeClassifier;
 
+import java.io.BufferedOutputStream;
+import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.OutputStream;
 import java.util.Collections;
 import java.util.List;
 
-public class HandlePhotoActivity extends CameraActivity implements CvCameraViewListener2 {
+import okhttp3.MediaType;
+import okhttp3.MultipartBody;
+import okhttp3.RequestBody;
+
+public class HandlePhotoActivity extends CameraActivity implements CvCameraViewListener2, View.OnClickListener {
 
     private Mat mRgba;
     private Mat mGray;
     private Button takePictureButton;
-    private Button setCamButton;
+    private TextView tvPhotoType;
     private boolean isButtonEnable = false;
 
     private CascadeClassifier mJavaDetector;
     private CameraBridgeViewBase mOpenCvCameraView;
+
+    private Rect currentReact;
+    private int photoId;
+    private String photoType;
+
+    private SessionManager sessionManager;
 
 
     @Override
@@ -49,15 +71,22 @@ public class HandlePhotoActivity extends CameraActivity implements CvCameraViewL
 
         setContentView(R.layout.activity_handle_photo);
 
+        Intent intent = getIntent();
+        photoId = intent.getExtras().getInt("photoId");
+        photoType = intent.getExtras().getString("photoType");
+
+        sessionManager = new SessionManager(this);
+
+        tvPhotoType = findViewById(R.id.tvPhotoType);
+
         takePictureButton = findViewById(R.id.btnTakePicture);
-        setCamButton = findViewById(R.id.btnSwitchCam);
         takePictureButton.setEnabled(isButtonEnable);
+        takePictureButton.setOnClickListener(this);
 
         mOpenCvCameraView = findViewById(R.id.fd_activity_surface_view);
         mOpenCvCameraView.setVisibility(CameraBridgeViewBase.VISIBLE);
         mOpenCvCameraView.setCameraIndex(0);
         mOpenCvCameraView.setCvCameraViewListener(this);
-
 
     }
 
@@ -78,14 +107,6 @@ public class HandlePhotoActivity extends CameraActivity implements CvCameraViewL
         mRgba = inputFrame.rgba();
         mGray = inputFrame.gray();
 
-        Mat rotImage = Imgproc.getRotationMatrix2D(new Point(mRgba.cols() / 2,
-                mRgba.rows() / 2), 90, 1.0);
-
-        Imgproc.warpAffine(mRgba, mRgba, rotImage, mRgba.size());
-
-        Imgproc.warpAffine(mGray, mGray, rotImage, mRgba.size());
-
-
         MatOfRect faces = new MatOfRect();
 
         if (mJavaDetector != null) {
@@ -105,6 +126,7 @@ public class HandlePhotoActivity extends CameraActivity implements CvCameraViewL
 
 
         for (Rect rect : facesArray) {
+            currentReact = rect;
             Imgproc.rectangle(mRgba, rect.br(), rect.tl(), new Scalar(0, 255, 0, 255), 3);
         }
 
@@ -140,6 +162,29 @@ public class HandlePhotoActivity extends CameraActivity implements CvCameraViewL
         super.onDestroy();
         mOpenCvCameraView.disableView();
     }
+
+
+    @Override
+    public void onClick(View v) {
+        goToConfirmActivity();
+    }
+
+    private void goToConfirmActivity() {
+        String token = sessionManager.fetchAuthToken();
+        Bitmap bitmap = convertMatToBitMap(mGray);
+
+        ByteArrayOutputStream stream = new ByteArrayOutputStream();
+        bitmap.compress(Bitmap.CompressFormat.PNG, 100, stream);
+        byte[] byteArray = stream.toByteArray();
+
+        Intent intent = new Intent(this, ConfirmPhotoActivity.class);
+        intent.putExtra("token", token);
+        intent.putExtra("photoId", photoId);
+        intent.putExtra("photoType", photoType);
+        intent.putExtra("bitmap", byteArray);
+        startActivity(intent);
+    }
+
 
     private BaseLoaderCallback mLoaderCallback = new BaseLoaderCallback(this) {
         @Override
@@ -178,5 +223,19 @@ public class HandlePhotoActivity extends CameraActivity implements CvCameraViewL
             }
         }
     };
+
+
+    private Bitmap convertMatToBitMap(Mat input) {
+        Bitmap bmp = null;
+        try {
+            Mat cropped = new Mat(input, currentReact);
+            bmp = Bitmap.createBitmap(cropped.cols(), cropped.rows(), Bitmap.Config.ARGB_8888);
+            Utils.matToBitmap(cropped, bmp);
+        } catch (CvException e) {
+            Log.d("Exception", e.getMessage());
+        }
+        return bmp;
+    }
+
 
 }

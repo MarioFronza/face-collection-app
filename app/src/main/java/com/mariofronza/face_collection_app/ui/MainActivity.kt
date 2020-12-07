@@ -66,6 +66,12 @@ class MainActivity : AppCompatActivity() {
         goToSignInActivity()
     }
 
+    private fun goToAppIntro() {
+        Intent(this, AppIntroActivity::class.java).also {
+            startActivity(it)
+        }
+    }
+
     private fun refreshUserToken(refreshToken: String) {
         val refreshTokenRequest = RefreshTokenRequest(refreshToken)
         viewModel.refreshToken(refreshTokenRequest)
@@ -75,13 +81,17 @@ class MainActivity : AppCompatActivity() {
         super.onStart()
         val token = sessionManager.fetchAuthToken()
         val refreshToken = sessionManager.fetchRefreshToken()
-        if (token == null || refreshToken == null) {
-            goToSignInActivity()
-        }
-        if (refreshToken != null) {
-            refreshUserToken(refreshToken)
+        if (token == null) {
+            goToAppIntro()
+        } else {
+            if (refreshToken != null) {
+                refreshUserToken(refreshToken)
+            } else {
+                goToSignInActivity()
+            }
         }
 
     }
+
 
 }

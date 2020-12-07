@@ -24,10 +24,10 @@
         <ImageView
             android:id="@+id/ivPhotoItem"
             android:layout_width="100dp"
-            android:layout_height="wrap_content"
+            android:layout_height="match_parent"
             android:layout_weight="0"
             android:contentDescription="@string/student_photo"
-            android:scaleType="centerCrop"
+            android:scaleType="centerInside"
             app:srcCompat="@drawable/no_profile"
             tools:srcCompat="@drawable/no_profile" />
 
