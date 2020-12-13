@@ -59,12 +59,14 @@ class SignInActivity : AppCompatActivity() {
 
     private fun signIn(email: String, password: String) {
         val session = SessionRequest(email, password)
+        btnSignIn.startAnimation()
         viewModel.singIn(session)
     }
 
     private fun signInSuccess(sessionResponse: SessionResponse) {
         sessionManager.saveAuthToken(sessionResponse.token)
         sessionManager.saveRefreshToken(sessionResponse.refreshToken)
+        btnSignIn.revertAnimation()
         Intent(this, MainActivity::class.java).also {
             startActivity(it)
         }
@@ -72,6 +74,7 @@ class SignInActivity : AppCompatActivity() {
     }
 
     private fun signInFail(message: String) {
+        btnSignIn.revertAnimation()
         Toast.makeText(this, message, Toast.LENGTH_SHORT).show()
     }
 

@@ -100,6 +100,9 @@ dependencies {
     //AppIntro
     implementation 'com.github.AppIntro:AppIntro:6.0.0'
 
+    //Loading Button
+    implementation 'br.com.simplepass:loading-button-android:2.2.0'
+
     //OpenCV
     implementation project(':opencv')
 }

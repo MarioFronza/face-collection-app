@@ -3,6 +3,7 @@ package com.mariofronza.face_collection_app.ui.user
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
+import com.mariofronza.face_collection_app.models.ProfileRequest
 import com.mariofronza.face_collection_app.models.RefreshTokenRequest
 import com.mariofronza.face_collection_app.models.SessionRequest
 import com.mariofronza.face_collection_app.models.SessionResponse
@@ -50,5 +51,17 @@ class UserViewModel(
             }
         }
     }
+
+    fun updateProfile(token: String, profileRequest: ProfileRequest) {
+        CoroutineScope(Dispatchers.Main).launch {
+            val response = usersRepository.updateProfile(token, profileRequest)
+            if (!response.isSuccessful) {
+                val errorMessage =
+                    RequestErrorFormatter.formatErrorBody(response.errorBody()!!.string())
+                _error.value = errorMessage
+            }
+        }
+    }
+
 
 }

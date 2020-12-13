@@ -3,10 +3,13 @@ package com.mariofronza.face_collection_app.ui
 import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import android.view.Menu
+import android.view.MenuItem
 import android.widget.Toast
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.Navigation
+import androidx.navigation.findNavController
 import com.mariofronza.face_collection_app.R
 import com.mariofronza.face_collection_app.api.ApiService
 import com.mariofronza.face_collection_app.models.RefreshTokenRequest
@@ -44,6 +47,34 @@ class MainActivity : AppCompatActivity() {
             signInFail(message)
         })
 
+    }
+
+    override fun onCreateOptionsMenu(menu: Menu?): Boolean {
+        val inflater = menuInflater
+        inflater.inflate(R.menu.manu_main, menu)
+        return super.onCreateOptionsMenu(menu)
+    }
+
+    override fun onOptionsItemSelected(item: MenuItem): Boolean {
+        when (item.itemId) {
+            R.id.profile -> {
+                goToProfile()
+                return true
+            }
+            R.id.exitApp -> {
+                signOut()
+                return true
+            }
+        }
+        return super.onOptionsItemSelected(item)
+    }
+
+    private fun goToProfile() {
+    }
+
+    private fun signOut() {
+        sessionManager.removeTokens()
+        goToSignInActivity()
     }
 
     override fun onSupportNavigateUp(): Boolean {

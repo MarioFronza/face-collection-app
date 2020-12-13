@@ -51,10 +51,14 @@ class ConfirmPhotoActivity : AppCompatActivity() {
             ViewModelProvider(this, photosViewModelFactory).get(PhotosViewModel::class.java)
 
         photosViewModel.photos.observe(this, Observer {
+            btnConfirmPhoto.revertAnimation()
+            btnNewPhoto.visibility = View.VISIBLE
             goToMainActivity()
         })
 
         photosViewModel.error.observe(this, Observer {
+            btnConfirmPhoto.revertAnimation()
+            btnNewPhoto.visibility = View.VISIBLE
             Toast.makeText(this, "Erro ao realizar operação", Toast.LENGTH_SHORT).show()
         })
     }
@@ -67,6 +71,8 @@ class ConfirmPhotoActivity : AppCompatActivity() {
     }
 
     fun confirmPhoto(view: View) {
+        btnConfirmPhoto.startAnimation()
+        btnNewPhoto.visibility = View.GONE
         if (photoId == 0) {
             createPhoto()
         } else {

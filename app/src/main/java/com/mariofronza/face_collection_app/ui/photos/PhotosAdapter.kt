@@ -7,6 +7,7 @@ import android.view.ViewGroup
 import androidx.cardview.widget.CardView
 import androidx.core.view.marginBottom
 import androidx.recyclerview.widget.RecyclerView
+import androidx.swiperefreshlayout.widget.CircularProgressDrawable
 import com.bumptech.glide.Glide
 import com.bumptech.glide.load.engine.DiskCacheStrategy
 import com.mariofronza.face_collection_app.R
@@ -33,8 +34,16 @@ class PhotosAdapter(
         holder.itemView.apply {
             tvPhotoItemType.text = getFormattedPhotoType(photo.photoType)
             tvPhotoItemDate.text = photo.updatedAt?.let { getFormattedDate(it) }
+
+
+            val circularProgressDrawable = CircularProgressDrawable(context)
+            circularProgressDrawable.strokeWidth = 5f
+            circularProgressDrawable.centerRadius = 30f
+            circularProgressDrawable.start()
+
             Glide.with(context)
                 .load(photo.url)
+                .placeholder(circularProgressDrawable)
                 .diskCacheStrategy(DiskCacheStrategy.ALL)
                 .error(R.drawable.no_profile)
                 .into(ivPhotoItem)

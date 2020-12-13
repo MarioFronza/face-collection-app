@@ -1,9 +1,6 @@
 package com.mariofronza.face_collection_app.api
 
-import com.mariofronza.face_collection_app.models.Photo
-import com.mariofronza.face_collection_app.models.RefreshTokenRequest
-import com.mariofronza.face_collection_app.models.SessionRequest
-import com.mariofronza.face_collection_app.models.SessionResponse
+import com.mariofronza.face_collection_app.models.*
 import okhttp3.MultipartBody
 import retrofit2.Response
 import retrofit2.Retrofit
@@ -15,7 +12,7 @@ interface ApiService {
     companion object {
         operator fun invoke(): ApiService {
             return Retrofit.Builder()
-                .baseUrl("http://192.168.1.102:3333/")
+                .baseUrl("http:///")
                 .addConverterFactory(GsonConverterFactory.create())
                 .build()
                 .create(ApiService::class.java)
@@ -42,6 +39,11 @@ interface ApiService {
         @Part image: MultipartBody.Part
     ): Response<Photo>
 
+    @PUT("profiles")
+    suspend fun updateProfile(
+        @Header("Authorization") token: String,
+        @Body profile: ProfileRequest
+    ): Response<Void>
 
     @POST("sessions")
     suspend fun createSession(@Body request: SessionRequest): Response<SessionResponse>

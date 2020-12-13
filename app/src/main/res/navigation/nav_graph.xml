@@ -27,4 +27,6 @@
             app:destination="@id/photosFragment" />
     </fragment>
 
+
+
 </navigation>
