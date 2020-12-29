@@ -9,6 +9,7 @@ import android.view.View;
 import android.view.WindowManager;
 import android.widget.Button;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.lifecycle.Observer;
 
@@ -23,9 +24,11 @@ import org.opencv.android.CameraBridgeViewBase;
 import org.opencv.android.LoaderCallbackInterface;
 import org.opencv.android.OpenCVLoader;
 import org.opencv.android.Utils;
+import org.opencv.core.Core;
 import org.opencv.core.CvException;
 import org.opencv.core.Mat;
 import org.opencv.core.MatOfRect;
+import org.opencv.core.Point;
 import org.opencv.core.Rect;
 import org.opencv.core.Scalar;
 import org.opencv.core.Size;
@@ -51,7 +54,6 @@ public class HandlePhotoActivity extends CameraActivity implements CvCameraViewL
     private Mat mRgba;
     private Mat mGray;
     private Button takePictureButton;
-    private TextView tvPhotoType;
     private boolean isButtonEnable = false;
 
     private CascadeClassifier mJavaDetector;
@@ -77,18 +79,15 @@ public class HandlePhotoActivity extends CameraActivity implements CvCameraViewL
 
         sessionManager = new SessionManager(this);
 
-        tvPhotoType = findViewById(R.id.tvPhotoType);
-
         takePictureButton = findViewById(R.id.btnTakePicture);
-        takePictureButton.setEnabled(isButtonEnable);
         takePictureButton.setOnClickListener(this);
 
         mOpenCvCameraView = findViewById(R.id.fd_activity_surface_view);
         mOpenCvCameraView.setVisibility(CameraBridgeViewBase.VISIBLE);
         mOpenCvCameraView.setCameraIndex(0);
         mOpenCvCameraView.setCvCameraViewListener(this);
-
     }
+
 
     @Override
     public void onCameraViewStarted(int width, int height) {
@@ -102,35 +101,75 @@ public class HandlePhotoActivity extends CameraActivity implements CvCameraViewL
         mRgba = new Mat();
     }
 
+//    @Override
+//    public Mat onCameraFrame(CameraBridgeViewBase.CvCameraViewFrame inputFrame) {
+//        mRgba = inputFrame.rgba();
+//        mGray = inputFrame.gray();
+
+//        MatOfRect faces = new MatOfRect();
+//
+//        if (mJavaDetector != null) {
+//            mJavaDetector.detectMultiScale(mGray, faces, 1.1, 2, 2,
+//                    new Size(450, 450), new Size());
+//        }
+//
+//        Rect[] facesArray = faces.toArray();
+//        isButtonEnable = facesArray.length != 0;
+//
+
+//
+//
+//        for (Rect rect : facesArray) {
+//            currentReact = rect;
+//            Imgproc.rectangle(mRgba, rect.br(), rect.tl(), new Scalar(0, 255, 0, 255), 3);
+//        }
+//
+//        return mRgba;
+//    }
+
     @Override
     public Mat onCameraFrame(CameraBridgeViewBase.CvCameraViewFrame inputFrame) {
+        MatOfRect faces = new MatOfRect();
+
         mRgba = inputFrame.rgba();
         mGray = inputFrame.gray();
 
-        MatOfRect faces = new MatOfRect();
+        Mat rotImage = Imgproc.getRotationMatrix2D(new Point(mRgba.cols() / 2,
+                mRgba.rows() / 2), 90, 1.0);
 
-        if (mJavaDetector != null) {
-            mJavaDetector.detectMultiScale(mGray, faces, 1.1, 2, 2,
-                    new Size(450, 450), new Size());
-        }
+        Imgproc.warpAffine(mRgba, mRgba, rotImage, mRgba.size());
+        Imgproc.warpAffine(mGray, mGray, rotImage, mRgba.size());
+
+        Core.flip(mRgba, mRgba, 1);
+        Core.flip(mGray, mGray, 1);
+
+        mJavaDetector.detectMultiScale(mGray, faces, 1.1, 3, 2,
+                new Size(400, 400));
 
         Rect[] facesArray = faces.toArray();
+
         isButtonEnable = facesArray.length != 0;
 
         runOnUiThread(new Runnable() {
             @Override
             public void run() {
-                takePictureButton.setEnabled(isButtonEnable);
+                validateButton(isButtonEnable);
             }
         });
 
-
         for (Rect rect : facesArray) {
-            currentReact = rect;
             Imgproc.rectangle(mRgba, rect.br(), rect.tl(), new Scalar(0, 255, 0, 255), 3);
+            currentReact = rect;
         }
-
         return mRgba;
+    }
+
+    private void validateButton(Boolean isButtonEnable) {
+        if (isButtonEnable) {
+            takePictureButton.setVisibility(View.VISIBLE);
+        } else {
+            takePictureButton.setVisibility(View.GONE);
+        }
     }
 
 

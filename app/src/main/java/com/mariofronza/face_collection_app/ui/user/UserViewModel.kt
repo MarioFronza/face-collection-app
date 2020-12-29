@@ -19,12 +19,16 @@ class UserViewModel(
 
     private var _session = MutableLiveData<SessionResponse>()
     private var _error = MutableLiveData<String>()
+    private var _profileSuccess = MutableLiveData<Boolean>()
 
     val session: LiveData<SessionResponse>
         get() = _session
 
     val error: LiveData<String>
         get() = _error
+
+    val profileSuccess: LiveData<Boolean>
+        get() = _profileSuccess
 
     fun singIn(sessionRequest: SessionRequest) {
         CoroutineScope(Dispatchers.Main).launch {
@@ -55,7 +59,9 @@ class UserViewModel(
     fun updateProfile(token: String, profileRequest: ProfileRequest) {
         CoroutineScope(Dispatchers.Main).launch {
             val response = usersRepository.updateProfile(token, profileRequest)
-            if (!response.isSuccessful) {
+            if (response.isSuccessful) {
+                _profileSuccess.value = true
+            } else {
                 val errorMessage =
                     RequestErrorFormatter.formatErrorBody(response.errorBody()!!.string())
                 _error.value = errorMessage

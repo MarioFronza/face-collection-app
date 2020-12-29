@@ -11,22 +11,16 @@
         android:id="@+id/photosFragment"
         android:name="com.mariofronza.face_collection_app.ui.photos.PhotosFragment"
         android:label="fragment_photos"
-        tools:layout="@layout/fragment_photos" >
-        <action
-            android:id="@+id/action_photosFragment_to_handlePhotoFragment"
-            app:destination="@id/handlePhotoFragment" />
-    </fragment>
-
+        tools:layout="@layout/fragment_photos" />
+    <activity
+        android:id="@+id/mainActivity"
+        android:name="com.mariofronza.face_collection_app.ui.MainActivity"
+        android:label="activity_main"
+        tools:layout="@layout/activity_main" />
     <fragment
-        android:id="@+id/handlePhotoFragment"
-        android:name="com.mariofronza.face_collection_app.ui.photos.HandlePhotoActivity"
-        android:label="fragment_handle_photo"
-        tools:layout="@layout/activity_handle_photo" >
-        <action
-            android:id="@+id/action_handlePhotoFragment_to_photosFragment"
-            app:destination="@id/photosFragment" />
-    </fragment>
-
+        android:id="@+id/profileFragment"
+        android:name="com.mariofronza.face_collection_app.ui.user.ProfileFragment"
+        android:label="ProfileFragment" />
 
 
 </navigation>

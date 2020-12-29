@@ -28,10 +28,8 @@
         android:theme="@style/Theme.Facecollectionapp"
         android:usesCleartextTraffic="true"
         tools:targetApi="m">
-        <activity android:name=".ui.photos.ConfirmPhotoActivity"></activity>
-        <activity
-            android:name=".ui.photos.HandlePhotoActivity"
-            android:screenOrientation="landscape" />
+        <activity android:name=".ui.photos.ConfirmPhotoActivity" />
+        <activity android:name=".ui.photos.HandlePhotoActivity" />
         <activity android:name=".ui.user.SignInActivity" />
         <activity android:name=".ui.AppIntroActivity" />
         <activity android:name=".ui.MainActivity">

@@ -70,6 +70,7 @@ class MainActivity : AppCompatActivity() {
     }
 
     private fun goToProfile() {
+        Navigation.findNavController(this, R.id.navHostFragment).navigate(R.id.profileFragment)
     }
 
     private fun signOut() {
@@ -91,6 +92,7 @@ class MainActivity : AppCompatActivity() {
     private fun signInSuccess(sessionResponse: SessionResponse) {
         sessionManager.saveAuthToken(sessionResponse.token)
         sessionManager.saveRefreshToken(sessionResponse.refreshToken)
+        Toast.makeText(this, sessionResponse.refreshToken, Toast.LENGTH_SHORT).show()
     }
 
     private fun signInFail(message: String) {
@@ -110,8 +112,10 @@ class MainActivity : AppCompatActivity() {
 
     override fun onStart() {
         super.onStart()
+
         val token = sessionManager.fetchAuthToken()
         val refreshToken = sessionManager.fetchRefreshToken()
+
         if (token == null) {
             goToAppIntro()
         } else {

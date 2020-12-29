@@ -12,7 +12,7 @@ class UsersRepository(
     suspend fun createSession(sessionRequest: SessionRequest) = api.createSession(sessionRequest)
 
     suspend fun updateProfile(token: String, profileRequest: ProfileRequest) =
-        api.updateProfile(token, profileRequest)
+        api.updateProfile("Bearer $token", profileRequest)
 
     suspend fun refreshToken(refreshToken: RefreshTokenRequest) = api.refreshToken(refreshToken)
 
