@@ -20,6 +20,7 @@ import com.mariofronza.face_collection_app.ui.user.SignInActivity
 import com.mariofronza.face_collection_app.ui.user.UserViewModel
 import com.mariofronza.face_collection_app.ui.user.UserViewModelFactory
 import com.mariofronza.face_collection_app.utils.SessionManager
+import kotlinx.android.synthetic.main.tool_bar.*
 
 class MainActivity : AppCompatActivity() {
 
@@ -92,7 +93,10 @@ class MainActivity : AppCompatActivity() {
     private fun signInSuccess(sessionResponse: SessionResponse) {
         sessionManager.saveAuthToken(sessionResponse.token)
         sessionManager.saveRefreshToken(sessionResponse.refreshToken)
-        Toast.makeText(this, sessionResponse.refreshToken, Toast.LENGTH_SHORT).show()
+        sessionManager.saveUserData(sessionResponse.user)
+        if (sessionResponse.user.role == "teacher") {
+            Navigation.findNavController(this, R.id.navHostFragment).navigate(R.id.classesFragment)
+        }
     }
 
     private fun signInFail(message: String) {

@@ -5,8 +5,6 @@
     android:id="@+id/nav_graph"
     app:startDestination="@id/photosFragment">
 
-
-
     <fragment
         android:id="@+id/photosFragment"
         android:name="com.mariofronza.face_collection_app.ui.photos.PhotosFragment"
@@ -21,6 +19,10 @@
         android:id="@+id/profileFragment"
         android:name="com.mariofronza.face_collection_app.ui.user.ProfileFragment"
         android:label="ProfileFragment" />
-
+    <fragment
+        android:id="@+id/classesFragment"
+        android:name="com.mariofronza.face_collection_app.ui.classes.ClassesFragment"
+        android:label="fragment_classes"
+        tools:layout="@layout/fragment_classes" />
 
 </navigation>

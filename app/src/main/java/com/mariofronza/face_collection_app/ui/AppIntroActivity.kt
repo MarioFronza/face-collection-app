@@ -4,7 +4,9 @@ import android.content.Intent
 import android.os.Bundle
 import androidx.fragment.app.Fragment
 import com.github.appintro.AppIntro
+import com.github.appintro.AppIntroCustomLayoutFragment
 import com.github.appintro.AppIntroFragment
+import com.mariofronza.face_collection_app.R
 import com.mariofronza.face_collection_app.ui.user.SignInActivity
 
 class AppIntroActivity : AppIntro() {
@@ -35,17 +37,16 @@ class AppIntroActivity : AppIntro() {
         )
         addSlide(
             AppIntroFragment.newInstance(
-                title = "Quase lá",
-                description = "Se você chegou até aqui, provavelmente já tem um cadastro na aplicação, sendo seu e-mail e uma senha padrão. Você pode alterar ela quando entrar no app."
+                title = "Uma dica",
+                description = "Tente variar um pouco suas expressões faciais em cada foto. Se você usa óculos 👓, varie a cada foto usando e não usando seus óculos."
             )
         )
         addSlide(
-            AppIntroFragment.newInstance(
-                title = "Mais uma coisa",
-                description = "Ao utilizar este app, você concorda em disponibilizar as fotos de seu rosto para o desenvolvimento deste trabalho." +
-                        "\n Suas fotos não serão compartilhadas com ninguém."
+            AppIntroCustomLayoutFragment.newInstance(
+                R.layout.term
             )
         )
+
     }
 
     override fun onSkipPressed(currentFragment: Fragment?) {

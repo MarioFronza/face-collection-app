@@ -1,9 +1,7 @@
 package com.mariofronza.face_collection_app.models
 
-data class User(
-    var id: Int,
+data class UserRequest(
     var name: String,
     var email: String,
-    var role: String,
     var password: String
 )

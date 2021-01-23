@@ -16,4 +16,7 @@ class PhotosRepository(
     suspend fun updatePhoto(token: String, id: Int, photoType: String, photo: MultipartBody.Part) =
         api.updatePhoto("Bearer $token", id, photoType, photo)
 
+    suspend fun recognize(token: String, classId: Int, photo: MultipartBody.Part) =
+        api.recognize("Bearer $token", classId, photo)
+
 }

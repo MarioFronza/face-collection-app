@@ -3,11 +3,13 @@ package com.mariofronza.face_collection_app.ui.photos;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
 import android.view.WindowManager;
 import android.widget.Button;
+import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -60,6 +62,7 @@ public class HandlePhotoActivity extends CameraActivity implements CvCameraViewL
     private CameraBridgeViewBase mOpenCvCameraView;
 
     private Rect currentReact;
+    private Mat currentMat;
     private int photoId;
     private String photoType;
 
@@ -101,34 +104,10 @@ public class HandlePhotoActivity extends CameraActivity implements CvCameraViewL
         mRgba = new Mat();
     }
 
-//    @Override
-//    public Mat onCameraFrame(CameraBridgeViewBase.CvCameraViewFrame inputFrame) {
-//        mRgba = inputFrame.rgba();
-//        mGray = inputFrame.gray();
-
-//        MatOfRect faces = new MatOfRect();
-//
-//        if (mJavaDetector != null) {
-//            mJavaDetector.detectMultiScale(mGray, faces, 1.1, 2, 2,
-//                    new Size(450, 450), new Size());
-//        }
-//
-//        Rect[] facesArray = faces.toArray();
-//        isButtonEnable = facesArray.length != 0;
-//
-
-//
-//
-//        for (Rect rect : facesArray) {
-//            currentReact = rect;
-//            Imgproc.rectangle(mRgba, rect.br(), rect.tl(), new Scalar(0, 255, 0, 255), 3);
-//        }
-//
-//        return mRgba;
-//    }
 
     @Override
     public Mat onCameraFrame(CameraBridgeViewBase.CvCameraViewFrame inputFrame) {
+
         MatOfRect faces = new MatOfRect();
 
         mRgba = inputFrame.rgba();
@@ -160,9 +139,11 @@ public class HandlePhotoActivity extends CameraActivity implements CvCameraViewL
         for (Rect rect : facesArray) {
             Imgproc.rectangle(mRgba, rect.br(), rect.tl(), new Scalar(0, 255, 0, 255), 3);
             currentReact = rect;
+            currentMat = mGray;
         }
         return mRgba;
     }
+
 
     private void validateButton(Boolean isButtonEnable) {
         if (isButtonEnable) {
@@ -210,7 +191,7 @@ public class HandlePhotoActivity extends CameraActivity implements CvCameraViewL
 
     private void goToConfirmActivity() {
         String token = sessionManager.fetchAuthToken();
-        Bitmap bitmap = convertMatToBitMap(mGray);
+        Bitmap bitmap = convertMatToBitMap(currentMat);
 
         ByteArrayOutputStream stream = new ByteArrayOutputStream();
         bitmap.compress(Bitmap.CompressFormat.PNG, 100, stream);

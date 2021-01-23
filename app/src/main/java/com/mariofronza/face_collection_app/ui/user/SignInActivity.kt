@@ -40,11 +40,16 @@ class SignInActivity : AppCompatActivity() {
             signInFail(message)
         })
 
+        tvCreateAccount.setOnClickListener {
+            goToSignUpActivity()
+        }
+
         btnSignIn.setOnClickListener {
             validateFields()
         }
 
     }
+
 
     private fun validateFields() {
         val email = etSignInEmail.text.toString()
@@ -66,12 +71,20 @@ class SignInActivity : AppCompatActivity() {
     private fun signInSuccess(sessionResponse: SessionResponse) {
         sessionManager.saveAuthToken(sessionResponse.token)
         sessionManager.saveRefreshToken(sessionResponse.refreshToken)
+        sessionManager.saveUserData(sessionResponse.user)
         btnSignIn.revertAnimation()
         Intent(this, MainActivity::class.java).also {
             startActivity(it)
         }
         finish()
     }
+
+    private fun goToSignUpActivity() {
+        Intent(this, SignUpActivity::class.java).also {
+            startActivity(it)
+        }
+    }
+
 
     private fun signInFail(message: String) {
         btnSignIn.revertAnimation()

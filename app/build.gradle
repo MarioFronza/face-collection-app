@@ -103,6 +103,9 @@ dependencies {
     //Loading Button
     implementation 'br.com.simplepass:loading-button-android:2.2.0'
 
+    //Gson
+    implementation 'com.google.code.gson:gson:2.8.6'
+
     //OpenCV
     implementation project(':opencv')
 }

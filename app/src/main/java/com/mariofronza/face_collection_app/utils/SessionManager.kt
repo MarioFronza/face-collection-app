@@ -2,7 +2,10 @@ package com.mariofronza.face_collection_app.utils
 
 import android.content.Context
 import android.content.SharedPreferences
+import com.google.gson.Gson
 import com.mariofronza.face_collection_app.R
+import com.mariofronza.face_collection_app.models.User
+
 
 class SessionManager(context: Context) {
 
@@ -11,6 +14,7 @@ class SessionManager(context: Context) {
 
 
     companion object {
+        const val USER_DATA = "user_data"
         const val USER_TOKEN = "user_token"
         const val REFRESH_TOKEN = "refresh_token"
     }
@@ -27,10 +31,19 @@ class SessionManager(context: Context) {
         editor.apply()
     }
 
+    fun saveUserData(user: User) {
+        val editor = prefs.edit()
+        val converter = Gson()
+        val json = converter.toJson(user)
+        editor.putString(USER_DATA, json)
+        editor.apply()
+    }
+
     fun removeTokens() {
         val editor = prefs.edit()
         editor.remove(USER_TOKEN)
         editor.remove(REFRESH_TOKEN)
+        editor.remove(USER_DATA)
         editor.apply()
     }
 
@@ -40,5 +53,10 @@ class SessionManager(context: Context) {
 
     fun fetchRefreshToken(): String? {
         return prefs.getString(REFRESH_TOKEN, null)
+    }
+
+    fun fetchUserData(): User? {
+        val converter = Gson()
+        return converter.fromJson(prefs.getString(USER_DATA, ""), User::class.java)
     }
 }

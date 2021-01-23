@@ -15,7 +15,6 @@ import com.mariofronza.face_collection_app.api.ApiService
 import com.mariofronza.face_collection_app.listeners.RecyclerViewClickListener
 import com.mariofronza.face_collection_app.models.Photo
 import com.mariofronza.face_collection_app.repositories.PhotosRepository
-import com.mariofronza.face_collection_app.ui.user.SignInActivity
 import com.mariofronza.face_collection_app.utils.SessionManager
 
 class PhotosFragment : Fragment(), RecyclerViewClickListener {
@@ -52,12 +51,12 @@ class PhotosFragment : Fragment(), RecyclerViewClickListener {
             adapter.notifyDataSetChanged()
         })
 
-        getAllFoods()
+        getAllPhotos()
 
         return view
     }
 
-    private fun getAllFoods() {
+    private fun getAllPhotos() {
         val token = sessionManager.fetchAuthToken()
         if (token != null) {
             photosViewModel.getAllPhotos(token)
@@ -65,7 +64,6 @@ class PhotosFragment : Fragment(), RecyclerViewClickListener {
     }
 
     override fun onRecyclerViewItemClick(photo: Photo) {
-
         Intent(activity, HandlePhotoActivity::class.java).also {
             it.putExtra("photoId", photo.id)
             it.putExtra("photoType", photo.photoType)
