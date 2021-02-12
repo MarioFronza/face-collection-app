@@ -10,6 +10,7 @@ import com.mariofronza.face_collection_app.listeners.RecyclerViewClickClassListe
 import com.mariofronza.face_collection_app.models.Class
 import kotlinx.android.synthetic.main.class_item.view.*
 import java.text.SimpleDateFormat
+import java.time.format.DateTimeFormatter
 import java.util.*
 
 class ClassesAdapter(
@@ -46,9 +47,11 @@ class ClassesAdapter(
     @SuppressLint("SimpleDateFormat")
     private fun getFormattedHour(date: String): String {
         val parser = SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss")
+        parser.timeZone = TimeZone.getTimeZone("GMT")
         val formatter = SimpleDateFormat("HH:mm")
         return formatter.format(parser.parse(date))
     }
+
 
     @SuppressLint("SimpleDateFormat")
     private fun getFormattedDate(date: String): String {

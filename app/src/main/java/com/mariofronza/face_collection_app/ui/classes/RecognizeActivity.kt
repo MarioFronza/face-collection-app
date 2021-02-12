@@ -43,6 +43,7 @@ class RecognizeActivity : CameraActivity(), CvCameraViewListener2 {
     private var recognizeLoading = false
 
     lateinit var currentReact: Rect
+    private var cameraIndex: Int = 1
 
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -63,7 +64,6 @@ class RecognizeActivity : CameraActivity(), CvCameraViewListener2 {
         sessionManager = SessionManager(this)
 
         photosViewModel.recognizeResponse.observe(this, Observer { sessionResponse ->
-            Log.i("CLASSES_RESPONSE", sessionResponse.student.toString())
             clRecognize.visibility = View.VISIBLE
             tvRecognizeId.text = sessionResponse.student.id.toString()
             tvRecognizeName.text = sessionResponse.student.user.name
@@ -74,13 +74,26 @@ class RecognizeActivity : CameraActivity(), CvCameraViewListener2 {
         photosViewModel.error.observe(this, Observer { message ->
             clRecognize.visibility = View.VISIBLE
             tvRecognizeError.text = message
-            recognizeLoading = false
             pbRecognize.visibility = View.GONE
+            recognizeLoading = false
         })
 
         cvRecognize.visibility = CameraBridgeViewBase.VISIBLE
-        cvRecognize.setCameraIndex(1)
+        cvRecognize.setCameraIndex(cameraIndex)
         cvRecognize.setCvCameraViewListener(this)
+
+        switchCam.setOnClickListener {
+            cameraIndex = if (cameraIndex == 1) {
+                0
+            } else {
+                1
+            }
+            runOnUiThread {
+                cvRecognize.disableView();
+                cvRecognize.setCameraIndex(cameraIndex);
+                cvRecognize.enableView();
+            }
+        }
     }
 
     private val mLoaderCallback: BaseLoaderCallback = object : BaseLoaderCallback(this) {
@@ -137,30 +150,46 @@ class RecognizeActivity : CameraActivity(), CvCameraViewListener2 {
         )
         Imgproc.warpAffine(mRgba, mRgba, rotImage, mRgba.size())
         Imgproc.warpAffine(mGray, mGray, rotImage, mRgba.size())
-        Core.flip(mRgba, mRgba, 1)
-        Core.flip(mGray, mGray, 1)
-        mJavaDetector!!.detectMultiScale(
-            mGray, faces, 1.1, 3, 2,
-            Size(400.0, 400.0)
-        )
-        val facesArray = faces.toArray()
-        for (rect in facesArray) {
-            Imgproc.rectangle(mRgba, rect.br(), rect.tl(), Scalar(0.0, 255.0, 0.0, 255.0), 3)
-            currentReact = rect
+
+        val flipCode = if (cameraIndex == 1) {
+            1
+        } else {
+            0
         }
 
-        thread() {
-            if (facesArray.isNotEmpty() && !recognizeLoading) {
-                recognizeLoading = true
-                photosViewModel.recognize(
-                    sessionManager?.fetchAuthToken()!!,
-                    classId,
-                    preparePhoto(mGray)
-                )
+        Core.flip(mRgba, mRgba, flipCode)
+        Core.flip(mGray, mGray, flipCode)
+
+        if (!recognizeLoading) {
+
+            mJavaDetector!!.detectMultiScale(
+                mGray, faces, 1.1, 3, 2,
+                Size(400.0, 400.0)
+            )
+            val facesArray = faces.toArray()
+            for (rect in facesArray) {
+                Imgproc.rectangle(mRgba, rect.br(), rect.tl(), Scalar(0.0, 255.0, 0.0, 255.0), 3)
+                currentReact = rect
+            }
+
+            runOnUiThread {
+                if (facesArray.isNotEmpty() && !recognizeLoading) {
+                    pbRecognize.visibility = View.VISIBLE
+                    clRecognize.visibility = View.GONE
+                }
+            }
+
+            thread() {
+                if (facesArray.isNotEmpty() && !recognizeLoading) {
+                    recognizeLoading = true
+                    photosViewModel.recognize(
+                        sessionManager?.fetchAuthToken()!!,
+                        classId,
+                        preparePhoto(mGray)
+                    )
+                }
             }
         }
-
-
 
         return mRgba
     }

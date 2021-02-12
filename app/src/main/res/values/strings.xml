@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">Coletor de faces</string>
+    <string name="app_name">Vision</string>
     <string name="name_field">Name</string>
     <string name="email_field">E-mail</string>
     <string name="password_field">Senha</string>

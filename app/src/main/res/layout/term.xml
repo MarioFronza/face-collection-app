@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
@@ -11,11 +12,15 @@
 
         <TextView
             android:id="@+id/text1"
-            android:layout_width="wrap_content"
+            android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:text="Termo de Consentimento Livre e Esclarecido"
+            android:text="TERMO DE CONSENTIMENTO LIVRE E ESCLARECIDO"
+            android:textAlignment="viewStart"
+            android:textColor="@android:color/white"
             android:textStyle="bold"
             app:layout_constraintBottom_toTopOf="@+id/text2"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.5"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
 
@@ -26,6 +31,7 @@
             android:layout_marginTop="8dp"
             android:text="Este aplicativo tem o objetivo de coletar faces (fotos do rosto) para contribuir com um estudo onde está sendo desenvolvido um protótipo de sistema de frequência escolar baseado em reconhecimento facial. O objetivo do estudo é avaliar a efetividade dos algoritmos de reconhecimento facial existentes nas faces coletadas por este aplicativo. O estudo é conduzido por Mário Fronza, como parte do seu trabalho de conclusão de curso na Universidade do Estado de Santa Catarina (UDESC), sob orientação do Prof. Dr. Fernando dos Santos. "
             android:textAlignment="viewStart"
+            android:textColor="@android:color/white"
             app:layout_constraintBottom_toTopOf="@+id/text3"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintHorizontal_bias="0.5"
@@ -34,12 +40,15 @@
 
         <TextView
             android:id="@+id/text3"
-            android:layout_width="wrap_content"
+            android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:layout_marginTop="24dp"
+            android:layout_marginTop="16dp"
             android:text="PROCEDIMENTO"
             android:textAlignment="viewStart"
+            android:textColor="@android:color/white"
             app:layout_constraintBottom_toTopOf="@+id/text4"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.5"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/text2" />
 
@@ -49,6 +58,7 @@
             android:layout_height="wrap_content"
             android:layout_marginTop="8dp"
             android:text="O procedimento será iniciado com a criação da conta ou login do estudante no aplicativo. Caso o estudante não tenha um login, poderá criar uma conta utilizando seus dados pessoais. Após esta etapa, será apresentada uma tela contendo uma lista de 30 itens, sendo que cada item é uma foto que o estudante irá tirar com a câmera do seu celular. Cada item contém uma descrição da pose que a face deverá ser tirada. O aluno deverá tirar todas as fotos do seu rosto com base na descrição informada."
+            android:textColor="@android:color/white"
             app:layout_constraintBottom_toTopOf="@+id/text5"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintHorizontal_bias="0.5"
@@ -58,12 +68,15 @@
 
         <TextView
             android:id="@+id/text5"
-            android:layout_width="wrap_content"
+            android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_marginTop="16dp"
             android:text="BENEFÍCIOS"
             android:textAlignment="viewStart"
+            android:textColor="@android:color/white"
             app:layout_constraintBottom_toTopOf="@+id/text6"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.5"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/text4" />
 
@@ -74,7 +87,8 @@
             android:layout_marginTop="8dp"
             android:text="O benefício ao participante deste estudo é contribuir com o desenvolvimento de um protótipo de sistema de frequência escolar, baseado em reconhecimento facial"
             android:textAlignment="viewStart"
-            app:layout_constraintBottom_toTopOf="@+id/text7"
+            android:textColor="@android:color/white"
+            app:layout_constraintBottom_toTopOf="@+id/text16"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintHorizontal_bias="0.5"
             app:layout_constraintStart_toStartOf="parent"
@@ -82,15 +96,47 @@
 
 
         <TextView
-            android:id="@+id/text7"
+            android:id="@+id/text16"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="16dp"
+            android:text="RISCOS"
+            android:textAlignment="viewStart"
+            android:textColor="@android:color/white"
+            app:layout_constraintBottom_toTopOf="@+id/text17"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.5"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/text6" />
+
+
+        <TextView
+            android:id="@+id/text17"
             android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="8dp"
+            android:text="Os riscos de participação no estudo são mínimos, e envolvem essencialmente a armazenagem dos dados. As fotos coletadas são armazenadas em um serviço de terceiro, no caso uma nuvem privada no provedor Digital Ocean (https://www.digitalocean.com/). A privacidade destes dados é garantida pela Política de Privacidade da Digital Ocean (https://www.digitalocean.com/legal/privacy-policy/). No entanto, se por algum motivo usuários mal intencionados obtiverem acesso à nuvem da Digital Ocean, as fotos poderão ser publicamente expostas."
+            android:textAlignment="viewStart"
+            android:textColor="@android:color/white"
+            app:layout_constraintBottom_toTopOf="@+id/text7"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.5"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/text16" />
+
+        <TextView
+            android:id="@+id/text7"
+            android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_marginTop="16dp"
             android:text="LIBERDADE DE PARTICIPAÇÃO"
             android:textAlignment="viewStart"
+            android:textColor="@android:color/white"
             app:layout_constraintBottom_toTopOf="@+id/text8"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.5"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/text6" />
+            app:layout_constraintTop_toBottomOf="@+id/text17" />
 
 
         <TextView
@@ -100,6 +146,7 @@
             android:layout_marginTop="8dp"
             android:text="O participante tem liberdade para se recusar a participar da coleta de fotos para o estudo, ou de retirar seu consentimento e desistir do estudo a qualquer momento, sem qualquer prejuízo ou penalização."
             android:textAlignment="viewStart"
+            android:textColor="@android:color/white"
             app:layout_constraintBottom_toTopOf="@+id/text9"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintHorizontal_bias="0.5"
@@ -108,12 +155,15 @@
 
         <TextView
             android:id="@+id/text9"
-            android:layout_width="wrap_content"
+            android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_marginTop="16dp"
             android:text="CONFIDENCIALIDADE"
             android:textAlignment="viewStart"
+            android:textColor="@android:color/white"
             app:layout_constraintBottom_toTopOf="@+id/text10"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.5"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/text8" />
 
@@ -124,6 +174,7 @@
             android:layout_marginTop="8dp"
             android:text="Todas as informações obtidas durante o estudo tem caráter confidencial e serão mantidas em sigilo durante todas as fases do estudo. Apenas os pesquisadores listados acima terão acesso às informações obtidas. A divulgação dos resultados do estudo, por exemplo na forma de publicações científicas, disponibilizará apenas dados anônimos."
             android:textAlignment="viewStart"
+            android:textColor="@android:color/white"
             app:layout_constraintBottom_toTopOf="@+id/text11"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintHorizontal_bias="0.5"
@@ -132,12 +183,15 @@
 
         <TextView
             android:id="@+id/text11"
-            android:layout_width="wrap_content"
+            android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_marginTop="16dp"
             android:text="CONSERVAÇÃO DOS DADOS"
             android:textAlignment="viewStart"
+            android:textColor="@android:color/white"
             app:layout_constraintBottom_toTopOf="@+id/text12"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.5"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/text10" />
 
@@ -148,6 +202,7 @@
             android:layout_marginTop="8dp"
             android:text="Os dados serão conservados em meio digital na nuvem da Digital Ocean por 1 (um) mês após a conclusão do TCC, e serão conservados em meio digital off-line (hd externo) por 5 (cinco) anos após a conclusão do TCC."
             android:textAlignment="viewStart"
+            android:textColor="@android:color/white"
             app:layout_constraintBottom_toTopOf="@+id/text13"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintHorizontal_bias="0.5"
@@ -156,12 +211,15 @@
 
         <TextView
             android:id="@+id/text13"
-            android:layout_width="wrap_content"
+            android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_marginTop="16dp"
             android:text="DÚVIDAS"
             android:textAlignment="viewStart"
+            android:textColor="@android:color/white"
             app:layout_constraintBottom_toTopOf="@+id/text14"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.5"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/text12" />
 
@@ -175,6 +233,7 @@
             E-mail: mariofronza1@gmail.com
             Telefone: (47) 99210-0081"
             android:textAlignment="viewStart"
+            android:textColor="@android:color/white"
             app:layout_constraintBottom_toTopOf="@+id/text15"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintHorizontal_bias="0.5"
@@ -188,7 +247,8 @@
             android:layout_marginTop="8dp"
             android:text="Ao clicar em 'Done' você consente participar do estudo e permite que sejam realizadas e coletadas fotografias do seu rosto para fins deste estudo. Uma via deste Termo de Consentimento Livre e Esclarecido será enviada ao seu e-mail."
             android:textAlignment="viewStart"
-            app:layout_constraintBottom_toTopOf="@+id/text2"
+            android:textColor="@android:color/white"
+            app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintHorizontal_bias="0.5"
             app:layout_constraintStart_toStartOf="parent"

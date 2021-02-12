@@ -1,6 +1,8 @@
 package com.mariofronza.face_collection_app.ui
 
 import android.content.Intent
+import android.graphics.Color
+import android.graphics.Color.red
 import android.os.Bundle
 import androidx.fragment.app.Fragment
 import com.github.appintro.AppIntro
@@ -12,10 +14,12 @@ import com.mariofronza.face_collection_app.ui.user.SignInActivity
 class AppIntroActivity : AppIntro() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+
         addSlide(
             AppIntroFragment.newInstance(
                 title = "Olá",
-                description = "Bem-vindo ao coletor de faces do Open Face Recognition System."
+                imageDrawable = R.drawable.logo,
+                description = "Bem-vindo ao coletor de faces do Vision."
             )
         )
         addSlide(
@@ -27,17 +31,19 @@ class AppIntroActivity : AppIntro() {
         addSlide(
             AppIntroFragment.newInstance(
                 title = "O que você precisa fazer?",
-                description = "Serão coletadas através do app 30 fotos do seu rosto" +
+                imageDrawable = R.drawable.example1,
+                description = "Serão coletadas, através do app, 30 fotos do seu rosto" +
                         "\n - 6 fotos de sua face normal 😐" +
-                        "\n - 6 fotos de você sorrindo 😁" +
-                        "\n - 6 fotos de olhos fechados 😑" +
-                        "\n - 6 fotos do lado esquerdo 👈" +
-                        "\n - 6 fotos do lado direito 👉"
+                        "\n - 6 fotos de você sorrindo 😁  " +
+                        "\n - 6 fotos de olhos fechados 😑 " +
+                        "\n - 6 fotos do lado esquerdo 👈  " +
+                        "\n - 6 fotos do lado direito 👉   "
             )
         )
         addSlide(
             AppIntroFragment.newInstance(
                 title = "Uma dica",
+                imageDrawable = R.drawable.example2,
                 description = "Tente variar um pouco suas expressões faciais em cada foto. Se você usa óculos 👓, varie a cada foto usando e não usando seus óculos."
             )
         )

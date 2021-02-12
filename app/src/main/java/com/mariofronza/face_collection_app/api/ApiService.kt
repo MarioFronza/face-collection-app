@@ -20,7 +20,7 @@ interface ApiService {
                 .build()
 
             return Retrofit.Builder()
-                .baseUrl("http:///")
+                .baseUrl("")
                 .addConverterFactory(GsonConverterFactory.create())
                 .client(clientSetup)
                 .build()
@@ -60,7 +60,7 @@ interface ApiService {
     ): Response<User>
 
     @Multipart
-    @POST("recognize/{classId}")
+    @POST("recognition/recognize/{classId}")
     suspend fun recognize(
         @Header("Authorization") token: String,
         @Path("classId") classId: Int,
