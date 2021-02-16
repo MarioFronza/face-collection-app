@@ -3,20 +3,13 @@ package com.mariofronza.face_collection_app.ui.photos;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
 import android.view.WindowManager;
 import android.widget.Button;
-import android.widget.ImageView;
-import android.widget.TextView;
-import android.widget.Toast;
-
-import androidx.lifecycle.Observer;
 
 import com.mariofronza.face_collection_app.R;
-import com.mariofronza.face_collection_app.repositories.PhotosRepository;
 import com.mariofronza.face_collection_app.utils.SessionManager;
 
 import org.opencv.android.BaseLoaderCallback;
@@ -37,25 +30,21 @@ import org.opencv.core.Size;
 import org.opencv.imgproc.Imgproc;
 import org.opencv.objdetect.CascadeClassifier;
 
-import java.io.BufferedOutputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
-import java.io.OutputStream;
 import java.util.Collections;
 import java.util.List;
 
-import okhttp3.MediaType;
-import okhttp3.MultipartBody;
-import okhttp3.RequestBody;
 
 public class HandlePhotoActivity extends CameraActivity implements CvCameraViewListener2, View.OnClickListener {
 
     private Mat mRgba;
     private Mat mGray;
     private Button takePictureButton;
+    private Button handlePhotoSwitchCam;
     private boolean isButtonEnable = false;
 
     private CascadeClassifier mJavaDetector;
@@ -68,6 +57,7 @@ public class HandlePhotoActivity extends CameraActivity implements CvCameraViewL
 
     private SessionManager sessionManager;
 
+    private int cameraIndex = 1;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -85,10 +75,35 @@ public class HandlePhotoActivity extends CameraActivity implements CvCameraViewL
         takePictureButton = findViewById(R.id.btnTakePicture);
         takePictureButton.setOnClickListener(this);
 
+        handlePhotoSwitchCam = findViewById(R.id.handlePhotoSwitchCam);
+
         mOpenCvCameraView = findViewById(R.id.fd_activity_surface_view);
         mOpenCvCameraView.setVisibility(CameraBridgeViewBase.VISIBLE);
         mOpenCvCameraView.setCameraIndex(0);
         mOpenCvCameraView.setCvCameraViewListener(this);
+
+        
+
+        handlePhotoSwitchCam.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if (cameraIndex == 1) {
+                    cameraIndex = 0;
+                } else {
+                    cameraIndex = 1;
+                }
+
+                runOnUiThread(new Runnable() {
+                    @Override
+                    public void run() {
+                        mOpenCvCameraView.disableView();
+                        mOpenCvCameraView.setCameraIndex(cameraIndex);
+                        mOpenCvCameraView.enableView();
+                    }
+                });
+            }
+        });
+
     }
 
 
@@ -119,8 +134,14 @@ public class HandlePhotoActivity extends CameraActivity implements CvCameraViewL
         Imgproc.warpAffine(mRgba, mRgba, rotImage, mRgba.size());
         Imgproc.warpAffine(mGray, mGray, rotImage, mRgba.size());
 
-        Core.flip(mRgba, mRgba, 1);
-        Core.flip(mGray, mGray, 1);
+        int flipCode = 0;
+
+        if (cameraIndex == 1) {
+            flipCode = 1;
+        }
+
+        Core.flip(mRgba, mRgba, flipCode);
+        Core.flip(mGray, mGray, flipCode);
 
         mJavaDetector.detectMultiScale(mGray, faces, 1.1, 3, 2,
                 new Size(400, 400));
@@ -148,8 +169,10 @@ public class HandlePhotoActivity extends CameraActivity implements CvCameraViewL
     private void validateButton(Boolean isButtonEnable) {
         if (isButtonEnable) {
             takePictureButton.setVisibility(View.VISIBLE);
+            handlePhotoSwitchCam.setVisibility(View.VISIBLE);
         } else {
             takePictureButton.setVisibility(View.GONE);
+            handlePhotoSwitchCam.setVisibility(View.GONE);
         }
     }
 

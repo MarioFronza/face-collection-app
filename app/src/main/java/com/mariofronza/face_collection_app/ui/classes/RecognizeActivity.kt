@@ -44,10 +44,14 @@ class RecognizeActivity : CameraActivity(), CvCameraViewListener2 {
 
     lateinit var currentReact: Rect
     private var cameraIndex: Int = 1
+    private var totalFaces: Int = 0
+    private var readyToRecognize: Boolean = true
+    private var hasNoStudent = true
 
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+
         window.addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON)
         setContentView(R.layout.activity_recognize_student)
         val intent = intent
@@ -69,13 +73,15 @@ class RecognizeActivity : CameraActivity(), CvCameraViewListener2 {
             tvRecognizeName.text = sessionResponse.student.user.name
             pbRecognize.visibility = View.GONE
             recognizeLoading = false
+            readyToRecognize = totalFaces == 0
         })
 
         photosViewModel.error.observe(this, Observer { message ->
-            clRecognize.visibility = View.VISIBLE
+            tvRecognizeError.visibility = View.VISIBLE
             tvRecognizeError.text = message
             pbRecognize.visibility = View.GONE
             recognizeLoading = false
+            readyToRecognize = totalFaces == 0
         })
 
         cvRecognize.visibility = CameraBridgeViewBase.VISIBLE
@@ -94,6 +100,8 @@ class RecognizeActivity : CameraActivity(), CvCameraViewListener2 {
                 cvRecognize.enableView();
             }
         }
+
+
     }
 
     private val mLoaderCallback: BaseLoaderCallback = object : BaseLoaderCallback(this) {
@@ -160,34 +168,39 @@ class RecognizeActivity : CameraActivity(), CvCameraViewListener2 {
         Core.flip(mRgba, mRgba, flipCode)
         Core.flip(mGray, mGray, flipCode)
 
-        if (!recognizeLoading) {
 
-            mJavaDetector!!.detectMultiScale(
-                mGray, faces, 1.1, 3, 2,
-                Size(400.0, 400.0)
-            )
-            val facesArray = faces.toArray()
-            for (rect in facesArray) {
-                Imgproc.rectangle(mRgba, rect.br(), rect.tl(), Scalar(0.0, 255.0, 0.0, 255.0), 3)
-                currentReact = rect
+        mJavaDetector!!.detectMultiScale(
+            mGray, faces, 1.05, 5, 2,
+            Size(400.0, 400.0)
+        )
+        val facesArray = faces.toArray()
+        totalFaces = facesArray.size
+
+        if (facesArray.isEmpty()) {
+            readyToRecognize = true
+        }
+
+        for (rect in facesArray) {
+            Imgproc.rectangle(mRgba, rect.br(), rect.tl(), Scalar(0.0, 255.0, 0.0, 255.0), 3)
+            currentReact = rect
+        }
+
+        runOnUiThread {
+            if (facesArray.isNotEmpty() && !recognizeLoading && readyToRecognize) {
+                pbRecognize.visibility = View.VISIBLE
+                clRecognize.visibility = View.GONE
+                tvRecognizeError.visibility = View.GONE
             }
+        }
 
-            runOnUiThread {
-                if (facesArray.isNotEmpty() && !recognizeLoading) {
-                    pbRecognize.visibility = View.VISIBLE
-                    clRecognize.visibility = View.GONE
-                }
-            }
-
-            thread() {
-                if (facesArray.isNotEmpty() && !recognizeLoading) {
-                    recognizeLoading = true
-                    photosViewModel.recognize(
-                        sessionManager?.fetchAuthToken()!!,
-                        classId,
-                        preparePhoto(mGray)
-                    )
-                }
+        thread() {
+            if (facesArray.isNotEmpty() && !recognizeLoading && readyToRecognize) {
+                recognizeLoading = true
+                photosViewModel.recognize(
+                    sessionManager?.fetchAuthToken()!!,
+                    classId,
+                    preparePhoto(mGray)
+                )
             }
         }
 
