@@ -1,12 +1,15 @@
 package com.mariofronza.face_collection_app.ui.classes
 
+import android.app.AlertDialog
 import android.content.Context
+import android.content.DialogInterface
 import android.graphics.Bitmap
 import android.graphics.BitmapFactory
 import android.os.Bundle
 import android.util.Log
 import android.view.View
 import android.view.WindowManager
+import android.widget.Toast
 
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
@@ -30,11 +33,13 @@ import java.io.*
 import kotlin.concurrent.thread
 
 class RecognizeActivity : CameraActivity(), CvCameraViewListener2 {
+    private lateinit var currentPhoto: MultipartBody.Part
     lateinit var mRgba: Mat
     lateinit var mGray: Mat
 
     private var mJavaDetector: CascadeClassifier? = null
     private var classId = 0
+    private var studentId = 0
 
     private var sessionManager: SessionManager? = null
     private lateinit var photosViewModel: PhotosViewModel
@@ -46,7 +51,6 @@ class RecognizeActivity : CameraActivity(), CvCameraViewListener2 {
     private var cameraIndex: Int = 1
     private var totalFaces: Int = 0
     private var readyToRecognize: Boolean = true
-    private var hasNoStudent = true
 
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -67,13 +71,46 @@ class RecognizeActivity : CameraActivity(), CvCameraViewListener2 {
 
         sessionManager = SessionManager(this)
 
+        val dialogClickListener: DialogInterface.OnClickListener =
+            DialogInterface.OnClickListener { _, which ->
+                when (which) {
+                    DialogInterface.BUTTON_POSITIVE -> {
+                        Toast.makeText(this, "Atualizando foto do aluno...", Toast.LENGTH_SHORT)
+                            .show()
+                        updateUserPhoto()
+                        pbRecognize.visibility = View.GONE
+                        recognizeLoading = false
+                        readyToRecognize = totalFaces == 0
+                    }
+                    DialogInterface.BUTTON_NEGATIVE -> {
+                        pbRecognize.visibility = View.GONE
+                        recognizeLoading = false
+                        readyToRecognize = totalFaces == 0
+                    }
+                }
+            }
+
+
         photosViewModel.recognizeResponse.observe(this, Observer { sessionResponse ->
-            clRecognize.visibility = View.VISIBLE
-            tvRecognizeId.text = sessionResponse.student.id.toString()
-            tvRecognizeName.text = sessionResponse.student.user.name
-            pbRecognize.visibility = View.GONE
-            recognizeLoading = false
-            readyToRecognize = totalFaces == 0
+            studentId = sessionResponse.student.id
+            val name = sessionResponse.student.user.name
+            val confidence = sessionResponse.confidence
+
+            if (confidence > 45 && confidence <= 80) {
+                val builder = AlertDialog.Builder(this)
+                builder.setMessage("O aluno é se chama $name?")
+                    .setPositiveButton("Sim", dialogClickListener)
+                    .setNegativeButton("Não", dialogClickListener).show()
+            } else {
+                clRecognize.visibility = View.VISIBLE
+                tvRecognizeId.text = sessionResponse.student.id.toString()
+                tvRecognizeName.text = sessionResponse.student.user.name
+                pbRecognize.visibility = View.GONE
+                recognizeLoading = false
+                readyToRecognize = totalFaces == 0
+            }
+
+
         })
 
         photosViewModel.error.observe(this, Observer { message ->
@@ -103,6 +140,7 @@ class RecognizeActivity : CameraActivity(), CvCameraViewListener2 {
 
 
     }
+
 
     private val mLoaderCallback: BaseLoaderCallback = object : BaseLoaderCallback(this) {
         override fun onManagerConnected(status: Int) {
@@ -219,10 +257,22 @@ class RecognizeActivity : CameraActivity(), CvCameraViewListener2 {
         convertFileToBitmap(file, finalBitMap);
 
         val requestFile = RequestBody.create(MediaType.parse("multipart/form-data"), file)
-        return MultipartBody.Part.createFormData(
+        currentPhoto = MultipartBody.Part.createFormData(
             "file",
             file.name + ".jpg", requestFile
         )
+        return currentPhoto
+    }
+
+    private fun updateUserPhoto() {
+        thread {
+            photosViewModel.update(
+                sessionManager?.fetchAuthToken()!!,
+                studentId,
+                classId,
+                currentPhoto
+            )
+        }
     }
 
     private fun convertFileToBitmap(file: File, bitmap: Bitmap) {

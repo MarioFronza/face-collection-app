@@ -68,10 +68,20 @@ class PhotosViewModel(
     fun recognize(token: String, classId: Int, photo: MultipartBody.Part) {
         CoroutineScope(Dispatchers.Main).launch {
             val response = photosRepository.recognize(token, classId, photo)
-            Log.i("RECOGNIZE_RESPONSE", response.toString())
             if (response.isSuccessful) {
                 _recognizeResponse.value = response.body()
             } else {
+                val errorMessage =
+                    RequestErrorFormatter.formatErrorBody(response.errorBody()!!.string())
+                _error.value = errorMessage
+            }
+        }
+    }
+
+    fun update(token: String, studentId: Int, classId: Int, photo: MultipartBody.Part) {
+        CoroutineScope(Dispatchers.Main).launch {
+            val response = photosRepository.update(token, studentId, classId, photo)
+            if (!response.isSuccessful) {
                 val errorMessage =
                     RequestErrorFormatter.formatErrorBody(response.errorBody()!!.string())
                 _error.value = errorMessage

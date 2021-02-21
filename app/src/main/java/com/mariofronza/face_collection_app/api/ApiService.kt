@@ -79,4 +79,13 @@ interface ApiService {
     @POST("refresh-tokens")
     suspend fun refreshToken(@Body request: RefreshTokenRequest): Response<SessionResponse>
 
+    @Multipart
+    @POST("recognition/update/{classId}/student/{studentId}")
+    suspend fun update(
+        @Header("Authorization") token: String,
+        @Path("studentId") studentId: Int,
+        @Path("classId") classId: Int,
+        @Part image: MultipartBody.Part
+    ): Response<Void>
+
 }

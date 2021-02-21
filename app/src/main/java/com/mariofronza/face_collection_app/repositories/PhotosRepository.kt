@@ -1,7 +1,6 @@
 package com.mariofronza.face_collection_app.repositories
 
 import com.mariofronza.face_collection_app.api.ApiService
-import com.mariofronza.face_collection_app.models.Photo
 import okhttp3.MultipartBody
 
 class PhotosRepository(
@@ -18,5 +17,8 @@ class PhotosRepository(
 
     suspend fun recognize(token: String, classId: Int, photo: MultipartBody.Part) =
         api.recognize("Bearer $token", classId, photo)
+
+    suspend fun update(token: String, studentId: Int, classId: Int, photo: MultipartBody.Part) =
+        api.update("Bearer $token", studentId, classId, photo)
 
 }
