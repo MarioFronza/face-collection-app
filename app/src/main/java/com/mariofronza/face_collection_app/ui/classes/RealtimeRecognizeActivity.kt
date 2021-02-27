@@ -33,7 +33,7 @@ import org.opencv.objdetect.CascadeClassifier
 import java.io.*
 import kotlin.concurrent.thread
 
-class RecognizeActivity : CameraActivity(), CvCameraViewListener2 {
+class RealtimeRecognizeActivity : CameraActivity(), CvCameraViewListener2 {
     private lateinit var currentPhoto: MultipartBody.Part
     lateinit var mRgba: Mat
     lateinit var mGray: Mat
@@ -58,7 +58,7 @@ class RecognizeActivity : CameraActivity(), CvCameraViewListener2 {
         super.onCreate(savedInstanceState)
 
         window.addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON)
-        setContentView(R.layout.activity_recognize_student)
+        setContentView(R.layout.activity_realtime_recognize_student)
         val intent = intent
         classId = intent.extras!!.getInt("classId")
         sessionManager = SessionManager(this)
@@ -71,6 +71,74 @@ class RecognizeActivity : CameraActivity(), CvCameraViewListener2 {
             ViewModelProvider(this, photosViewModelFactory).get(PhotosViewModel::class.java)
 
         sessionManager = SessionManager(this)
+
+        val dialogClickListener: DialogInterface.OnClickListener =
+            DialogInterface.OnClickListener { _, which ->
+                when (which) {
+                    DialogInterface.BUTTON_POSITIVE -> {
+                        Toast.makeText(this, "Atualizando foto do aluno...", Toast.LENGTH_SHORT)
+                            .show()
+                        updateUserPhoto()
+                        pbRecognize.visibility = View.GONE
+                        recognizeLoading = false
+                        readyToRecognize = totalFaces == 0
+                    }
+                    DialogInterface.BUTTON_NEGATIVE -> {
+                        pbRecognize.visibility = View.GONE
+                        recognizeLoading = false
+                        readyToRecognize = totalFaces == 0
+                    }
+                }
+            }
+
+
+        photosViewModel.recognizeResponse.observe(this, Observer { sessionResponse ->
+            studentId = sessionResponse.student.id
+            val name = sessionResponse.student.user.name
+            val confidence = sessionResponse.confidence
+
+            if (confidence > 45 && confidence <= 80) {
+                val builder = AlertDialog.Builder(this)
+                builder.setMessage("O aluno é se chama $name?")
+                    .setPositiveButton("Sim", dialogClickListener)
+                    .setNegativeButton("Não", dialogClickListener).show()
+            } else {
+                clRecognize.visibility = View.VISIBLE
+                tvRecognizeId.text = sessionResponse.student.id.toString()
+                tvRecognizeName.text = sessionResponse.student.user.name
+                pbRecognize.visibility = View.GONE
+                recognizeLoading = false
+                readyToRecognize = totalFaces == 0
+            }
+
+
+        })
+
+        photosViewModel.error.observe(this, Observer { message ->
+            tvRecognizeError.visibility = View.VISIBLE
+            tvRecognizeError.text = message
+            pbRecognize.visibility = View.GONE
+            recognizeLoading = false
+            readyToRecognize = totalFaces == 0
+        })
+
+        cvRecognize.visibility = CameraBridgeViewBase.VISIBLE
+        cvRecognize.setCameraIndex(cameraIndex)
+        cvRecognize.setCvCameraViewListener(this)
+
+        switchCam.setOnClickListener {
+            cameraIndex = if (cameraIndex == 1) {
+                0
+            } else {
+                1
+            }
+            runOnUiThread {
+                cvRecognize.disableView();
+                cvRecognize.setCameraIndex(cameraIndex);
+                cvRecognize.enableView();
+            }
+        }
+
 
     }
 
@@ -99,7 +167,7 @@ class RecognizeActivity : CameraActivity(), CvCameraViewListener2 {
                 } catch (e: IOException) {
                     e.printStackTrace()
                 }
-                cvRecognizeOne!!.enableView()
+                cvRecognize!!.enableView()
             } else {
                 super.onManagerConnected(status)
             }
@@ -156,6 +224,25 @@ class RecognizeActivity : CameraActivity(), CvCameraViewListener2 {
             currentReact = rect
         }
 
+        runOnUiThread {
+            if (facesArray.isNotEmpty() && !recognizeLoading && readyToRecognize) {
+                pbRecognize.visibility = View.VISIBLE
+                clRecognize.visibility = View.GONE
+                tvRecognizeError.visibility = View.GONE
+            }
+        }
+
+        thread() {
+            if (facesArray.isNotEmpty() && !recognizeLoading && readyToRecognize) {
+                recognizeLoading = true
+                photosViewModel.recognize(
+                    sessionManager?.fetchAuthToken()!!,
+                    classId,
+                    preparePhoto(mGray)
+                )
+            }
+        }
+
         return mRgba
     }
 
@@ -209,13 +296,13 @@ class RecognizeActivity : CameraActivity(), CvCameraViewListener2 {
     }
 
     override fun getCameraViewList(): List<CameraBridgeViewBase?> {
-        return listOf(cvRecognizeOne)
+        return listOf(cvRecognize)
     }
 
     public override fun onPause() {
         super.onPause()
-        if (cvRecognizeOne != null) {
-            cvRecognizeOne!!.disableView()
+        if (cvRecognize != null) {
+            cvRecognize!!.disableView()
         }
     }
 
@@ -230,6 +317,6 @@ class RecognizeActivity : CameraActivity(), CvCameraViewListener2 {
 
     public override fun onDestroy() {
         super.onDestroy()
-        cvRecognizeOne!!.disableView()
+        cvRecognize!!.disableView()
     }
 }

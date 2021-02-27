@@ -1,8 +1,9 @@
 package com.mariofronza.face_collection_app.ui.classes
 
+import android.app.AlertDialog
+import android.content.DialogInterface
 import android.content.Intent
 import android.os.Bundle
-import android.util.Log
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
@@ -16,14 +17,9 @@ import com.mariofronza.face_collection_app.R
 import com.mariofronza.face_collection_app.api.ApiService
 import com.mariofronza.face_collection_app.listeners.RecyclerViewClickClassListener
 import com.mariofronza.face_collection_app.models.Class
-import com.mariofronza.face_collection_app.models.Photo
 import com.mariofronza.face_collection_app.repositories.ClassesRepository
-import com.mariofronza.face_collection_app.repositories.PhotosRepository
-import com.mariofronza.face_collection_app.ui.photos.HandlePhotoActivity
-import com.mariofronza.face_collection_app.ui.photos.PhotosAdapter
-import com.mariofronza.face_collection_app.ui.photos.PhotosViewModel
-import com.mariofronza.face_collection_app.ui.photos.PhotosViewModelFactory
 import com.mariofronza.face_collection_app.utils.SessionManager
+import kotlinx.android.synthetic.main.activity_realtime_recognize_student.*
 
 
 class ClassesFragment : Fragment(), RecyclerViewClickClassListener {
@@ -64,6 +60,10 @@ class ClassesFragment : Fragment(), RecyclerViewClickClassListener {
 
         getAllClasses()
 
+
+
+
+
         return view
     }
 
@@ -75,10 +75,30 @@ class ClassesFragment : Fragment(), RecyclerViewClickClassListener {
     }
 
     override fun onRecyclerViewItemClick(classItem: Class) {
-        Intent(activity, RecognizeActivity::class.java).also {
-            it.putExtra("classId", classItem.id)
-            startActivity(it)
-        }
+
+        val dialogClickListener: DialogInterface.OnClickListener =
+            DialogInterface.OnClickListener { _, which ->
+                when (which) {
+                    DialogInterface.BUTTON_POSITIVE -> {
+                        Intent(activity, RealtimeRecognizeActivity::class.java).also {
+                            it.putExtra("classId", classItem.id)
+                            startActivity(it)
+                        }
+                    }
+                    DialogInterface.BUTTON_NEGATIVE -> {
+                        Intent(activity, RecognizeActivity::class.java).also {
+                            it.putExtra("classId", classItem.id)
+                            startActivity(it)
+                        }
+                    }
+                }
+            }
+
+        val builder = AlertDialog.Builder(activity)
+        builder.setMessage("Reconhecer aluno em tempo real?")
+            .setPositiveButton("Sim", dialogClickListener)
+            .setNegativeButton("Não", dialogClickListener).show()
+
     }
 
 
